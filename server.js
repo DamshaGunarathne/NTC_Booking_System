@@ -25,8 +25,6 @@ const app = express();
 // Middleware for parsing JSON requests
 app.use(express.json());
  
-// Swagger API documentation
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerConfig));
  
 // Route handlers
 app.use("/api/users", userRoutes);
@@ -53,7 +51,9 @@ mongoose
   .catch((err) => {
     console.error("Error connecting to MongoDB:", err.message);
   });
- 
+
+swaggerConfig(app);
+
 // Start the server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
