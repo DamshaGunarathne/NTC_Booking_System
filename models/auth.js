@@ -10,6 +10,7 @@ const auth = (roles = []) => {
     if (!token) return res.status(401).send("Access Denied");
  
     try {
+      console.log('JWT_SECRET:', process.env.JWT_SECRET);
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       req.user = decoded;
       if (roles.length && !roles.includes(decoded.role)) {

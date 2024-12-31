@@ -1,61 +1,51 @@
-// Import required libraries
-const express = require("express");
-const dotenv = require("dotenv");
-const mongoose = require("mongoose");
-const swaggerUI = require("swagger-ui-express");
-const swaggerConfig = require("./swaggerConfig");
- 
-// Load environment variables
-dotenv.config();
- 
-// Import route handlers
-const userRoutes = require("./routes/UserRoutes");
-const adminRoutes = require("./routes/AdminRoutes");
-const operatorRoutes = require("./routes/OperatorRoutes");
-const commuterRoutes = require("./routes/CommuterRoutes");
-const reservationRoutes = require("./routes/ReservationRoutes");
-const routeRoutes = require("./routes/RouteRoutes");
- 
-// Import middleware
-const errorMiddleware = require("./middleware/errorMiddleware");
- 
-// Initialize Express app
-const app = express();
- 
-// Middleware for parsing JSON requests
-app.use(express.json());
- 
- 
-// Route handlers
-app.use("/api/users", userRoutes);
-app.use("/api/admin", adminRoutes);
-app.use("/api/operators", operatorRoutes);
-app.use("/api/commuters", commuterRoutes);
-app.use("/api/reservations", reservationRoutes);
-app.use("/api/routes", routeRoutes);
- 
-// Default route
-app.get("/", (req, res) => {
-  res.send("Welcome to the RESTful API for the National Transport Commission!");
-});
- 
-// Error middleware for centralized error handling
-app.use(errorMiddleware);
- 
-// Connect to MongoDB
-mongoose
+const _express = require('express');
+const _dotenv = require('dotenv');
+const _mongoose = require('mongoose');
+const _swaggerUI = require('swagger-ui-express');
+const _swaggerConfig = require('./swaggerConfig');
+
+const userRoutes = require('./routes/UserRoutes');
+const adminRoutes = require('./routes/AdminRoutes');
+const operatorRoutes = require('./routes/OperatorRoutes');
+const commuterRoutes = require('./routes/CommuterRoutes');
+
+_dotenv.config();
+
+const _app = _express();
+
+// Middleware
+_app.use(_express.json());
+
+// Swagger Documentation
+_app.use('/api-docs', _swaggerUI.serve, _swaggerUI.setup(_swaggerConfig));
+
+// Users
+_app.use('/api/users', userRoutes);
+
+// Admin
+_app.use('/api/admin', adminRoutes);
+
+// Operator
+_app.use('/api/operator', operatorRoutes);
+
+// Commuter
+_app.use('/api/commuter', commuterRoutes);
+
+// Error Middleware
+_app.use(require('./middleware/errorMiddleware'));
+
+// MongoDB Connection
+_mongoose
   .connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    console.log("Connected to MongoDB");
+    console.log('Connected to DB');
   })
   .catch((err) => {
-    console.error("Error connecting to MongoDB:", err.message);
+    console.error('Error connecting to MongoDB:', err.message); // Correctly log the error
   });
 
-swaggerConfig(app);
-
-// Start the server
+// Start Server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+_app.listen(PORT, () => {
+  console.log(`Node API is running on port ${PORT}`);
 });

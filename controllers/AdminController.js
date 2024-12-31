@@ -1,28 +1,94 @@
-const Route = require('../models/Route'); // Example Model
- 
-// Create a new route
-const createRoute = async (req, res, next) => {
-    try {
-        const { routeName, origin, destination, schedule } = req.body;
-        const newRoute = new Route({ routeName, origin, destination, schedule });
-        await newRoute.save();
-        res.status(201).json({ success: true, route: newRoute });
-    } catch (error) {
-        next(error);
-    }
+// controllers/AdminController.js
+const Route = require('../models/RouteModel');
+const User = require('../models/UserModel');
+const Bus = require('../models/BusModel');
+
+// Add a new route
+exports.addRoute = async (req, res) => {
+  const { routeNumber, startingPoint, endingPoint, distance } = req.body;
+
+  try {    
+
+    //create new route
+    const newRoute = await Route.create({
+        routeNumber, 
+        startingPoint, 
+        endingPoint, 
+        distance, 
+      });
+    res.status(201).json({ message: 'Route added successfully', route: newRoute });
+  } catch (error) {controllers/AdminController.js
+    res.status(500).json({ message: 'Failed to add route', error: error.message });
+  }
 };
- 
+
+// Add a new bus
+exports.addBus = async (req, res) => {
+  const { busNumber, driverName, conductorName, operatorname, bustype, capacity, price, availableSeats, registrationNumber, routeNumber } = req.body;
+
+  try {
+    // Check if a bus with the same registrationNumber already exists
+    const existingBus = await Bus.findOne({ registrationNumber });
+    if (existingBus) {
+      return res.status(400).json({ message: 'A bus with this registration number already exists' });
+    }
+
+    // // Check if the routeId exists in the Route collection
+    // const routeExists = await Route.findById(routeId);
+    // if (!routeExists) {
+    //   return res.status(400).json({ message: 'Invalid route ID' });
+    // }
+
+     // Find the route by routeNumber
+     const route = await Route.findOne({ routeNumber });
+     const operator = await User.findOne({ 
+      name: operatorname,
+      role: 'Operator'
+    });
+     if (!route) {
+       return res.status(400).json({ message: 'Invalid route number' });
+     }
+     if (!operator) {
+       return res.status(400).json({ message: 'Invalid Operator' });
+     }
+
+    // Create a new bus
+    console.log("busNumber : ", busNumber)
+    const newBus = await Bus.create({
+      busNumber,
+      driverName,
+      conductorName,
+      bustype,
+      capacity,
+      price,
+      availableSeats,
+      registrationNumber,
+      routeNumber: route.routeNumber,
+      routeId: route.id,
+      operatorId: operator.id
+    });
+    res.status(201).json({ message: 'Bus added successfully', bus: newBus });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to add bus', error: error.message });
+  }
+};
+
 // Get all routes
-const getAllRoutes = async (req, res, next) => {
-    try {
-        const routes = await Route.find();
-        res.status(200).json({ success: true, routes });
-    } catch (error) {
-        next(error);
-    }
+exports.getRoutes = async (req, res) => {
+  try {
+    const routes = await Route.find();
+    res.status(200).json(routes);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch routes', error: error.message });
+  }
 };
- 
-module.exports = {
-    createRoute,
-    getAllRoutes,
+
+// Get all buses
+exports.getBuses = async (req, res) => {
+  try {
+    const buses = await Bus.find();
+    res.status(200).json(buses);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch buses', error: error.message });
+  }
 };

@@ -1,6 +1,5 @@
 // swaggerConfig.js
 const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
 
 const options = {
   definition: {
@@ -8,21 +7,24 @@ const options = {
     info: {
       title: 'User API',
       version: '1.0.0',
-      description: 'API for user registration and login',
+      description: 'API for NTC Bus Seat Reservation System. (WEB API 23.2) Created By Damsha Gunarathne',
     },
-    servers: [
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT', // Indicate that the token is a JWT
+        },
+      },
+    },
+    security: [
       {
-        url: 'http://localhost:3000', // API base URL
+        bearerAuth: [], // Apply bearerAuth to all routes that require authentication
       },
     ],
   },
   apis: ['./routes/*.js'],
 };
 
-const swaggerSpec = swaggerJsDoc(options);
-// Export the setup function
-const setupSwagger = (app) => {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-};
-
-module.exports = setupSwagger;
+module.exports = swaggerJsDoc(options);

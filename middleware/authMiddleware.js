@@ -1,32 +1,32 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
+const User = require('../models/UserModel'); // Import your User model
 
-const auth = (requiredRole) => {
-  return (req, res, next) => {
-    if (!req.headers || !req.headers.authorization) {
-      return res.status(401).json({ message: "Unauthorized, no token provided" });
-    }
 
-    let token = req.headers.authorization;
+module.exports = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1]; // Extract token
+  console.log('Token:', token); // Log the token value
+  console.log('Request Headers:', req.headers); // Log all request headers
+  if (!token) {
+    return res.status(401).json({ message: 'Authorization failed. Token missing.' });
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify token
+    console.log('Decoded Token:', decoded); // Log decoded token
 
-    if (token.startsWith("Bearer")) {
-      try {
-        token = token.split(" ")[1];
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded; // Attach user data to the request
+  // Fetch operator information from the database
+  const user = await User.findById(decoded.id); // Assuming `id` is in the token payload
+  if (!user) {
+    return res.status(401).json({ message: 'User authentication failed. User not found.' });
+  }
 
-        // Check role if requiredRole is specified
-        if (requiredRole && req.user.role !== requiredRole) {
-          return res.status(403).json({ message: "Forbidden, insufficient permissions" });
-        }
-
-        next();
-      } catch (err) {
-        return res.status(401).json({ message: "Unauthorized, invalid token" });
-      }
-    } else {
-      return res.status(401).json({ message: "Unauthorized, invalid token format" });
-    }
+  req.user = {
+    id: user._id,
+    name: user.name, // Assuming the user's name column is `name`
+    role: user.role, // Assuming the user's role column is `role`
   };
+    // req.user = decoded; // Attach decoded token data to request object
+    next();
+  } catch (error) {
+    res.status(400).json({ message: 'Authentication error. Invalid token.' });
+  }
 };
-
-module.exports = auth;
