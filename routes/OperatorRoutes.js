@@ -13,12 +13,12 @@ const operatorMiddleware = require('../middleware/operatorMiddleware');
 
 /**
  * @swagger
- * /api/operator/schedule:
+ * /api/operator/schedules/:
  *   post:
  *     summary: Add a new bus schedule
  *     tags: [Schedules]
  *     security:
- *       - Bearer: []
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -131,12 +131,12 @@ router.post('/schedules', authMiddleware, operatorMiddleware, addSchedule);
 
 /**
  * @swagger
- * /api/operator/schedule/{scheduleToken}:
+ * /api/operator/schedules/{scheduleToken}:
  *   put:
  *     summary: Update an existing schedule by its token
  *     tags: [Schedules]
  *     security:
- *       - Bearer: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: scheduleToken
@@ -191,21 +191,16 @@ router.post('/schedules', authMiddleware, operatorMiddleware, addSchedule);
  *       404:
  *         description: Schedule not found
  */
-router.put(
-  '/schedules/:scheduleToken',
-  authMiddleware,
-  operatorMiddleware,
-  updateSchedule
-);
+router.put('/schedules/:scheduleToken', authMiddleware, operatorMiddleware, updateSchedule);
 
 /**
  * @swagger
- * /api/operator/schedule/{scheduleToken}:
+ * /api/operator/schedules/{scheduleToken}:
  *   delete:
  *     summary: Remove a schedule by its token
  *     tags: [Schedules]
  *     security:
- *       - Bearer: []
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: scheduleToken
@@ -221,12 +216,7 @@ router.put(
  *       500:
  *         description: Internal server error
  */
-router.delete(
-  '/schedules/:scheduleToken',
-  authMiddleware,
-  operatorMiddleware,
-  deleteSchedule
-);
+router.delete('/schedules/:scheduleToken', authMiddleware, operatorMiddleware, deleteSchedule);
 
 // Additional routes...
 router.get('/schedules', authMiddleware, operatorMiddleware, getSchedulesByOperator);

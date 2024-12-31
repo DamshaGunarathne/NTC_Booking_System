@@ -1,10 +1,8 @@
-// middleware/OperatorMiddlewaree.js
-const OperatorMiddleware = (req, res, next) => {
-    console.log('User Role:', req.user.role);
-    if(req.user.role !== 'Operator') {
-        return res.status(403).json({ message: 'Access denied. Operator Only.!'});
+// operatorMiddleware.js
+module.exports = (req, res, next) => {
+    if (req.user.role !== 'Operator') {
+      return res.status(403).json({ message: 'Access denied. Not an operator.' });
     }
     next();
-};
-
-module.exports = OperatorMiddleware;
+  };
+  
