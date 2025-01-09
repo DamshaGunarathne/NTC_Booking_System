@@ -5,13 +5,14 @@ const Bus = require('../models/BusModel');
 
 // Add a new route
 exports.addRoute = async (req, res) => {
-  const { routeNumber, startingPoint, endingPoint, distance } = req.body;
+  const { routeNumber, routeName, startingPoint, endingPoint, distance } = req.body;
 
   try {    
 
     //create new route
     const newRoute = await Route.create({
         routeNumber, 
+        routeName,
         startingPoint, 
         endingPoint, 
         distance, 

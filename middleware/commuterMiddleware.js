@@ -21,7 +21,7 @@ const commuterMiddleware = async (req, res, next) => {
         }
 
         // Check if the user has the role of "commuter"
-        if (user.role !== 'commuter') {
+        if (user.role !== 'Commuter') {
             return res.status(403).json({ message: "Access denied. Only commuters can access this resource." });
         }
 

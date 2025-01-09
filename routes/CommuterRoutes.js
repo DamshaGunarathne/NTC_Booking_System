@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { searchBuses } = require('../controllers/CommuterController');
+const { searchBuses, addBooking } = require('../controllers/CommuterController');
 const authMiddleware = require('../middleware/authMiddleware');
 const commuterMiddleware = require('../middleware/commuterMiddleware');
 
@@ -132,6 +132,117 @@ router.get(
     authMiddleware, // Middleware to verify user authentication
     commuterMiddleware, // Middleware to verify the user has a commuter role
     searchBuses // Controller function to handle the request
+);
+
+/**
+ * @swagger
+ * /api/commuter/bookbus:
+ *   post:
+ *     summary: Book a bus for transportation
+ *     tags: [Commuters]
+ *     security:
+ *       - bearerAuth: []  # Authorization using Bearer token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - bookingNumber
+ *               - userName
+ *               - seatCount
+ *               - bookingDate
+ *               - scheduleToken
+ *               - bookingToken
+ *             properties:
+ *               bookingNumber:
+ *                 type: string
+ *                 description: Unique booking identifier.
+ *               userName:
+ *                 type: string
+ *                 description: Name of the user making the booking.
+ *               seatCount:
+ *                 type: number
+ *                 description: Number of seats being booked.
+ *               bookingDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Date and time of the booking.
+ *               scheduleToken:
+ *                 type: string
+ *                 description: Unique identifier for the schedule being booked.
+ *               bookingToken:
+ *                 type: string
+ *                 description: Unique identifier for the booking.
+ *     responses:
+ *       201:
+ *         description: The booking was successfully added.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Booking successfully created."
+ *                 booking:
+ *                   type: object
+ *                   properties:
+ *                     bookingNumber:
+ *                       type: string
+ *                       example: "B12345"
+ *                     userName:
+ *                       type: string
+ *                       example: "John Doe"
+ *                     seatCount:
+ *                       type: number
+ *                       example: 3
+ *                     bookingDate:
+ *                       type: string
+ *                       example: "2025-01-08T10:00:00Z"
+ *                     scheduleToken:
+ *                       type: string
+ *                       example: "R001AB20250108-CityRoute"
+ *                     bookingToken:
+ *                       type: string
+ *                       example: "BK12345"
+ *       400:
+ *         description: Invalid input data provided.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Provided data is incomplete or invalid."
+ *       401:
+ *         description: Authorization error (e.g., missing token).
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Access denied. Authentication token is invalid."
+ *       500:
+ *         description: An error occurred while processing the request.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Unable to process the booking. Please try again later."
+ */
+router.post(
+    '/bookbus',
+    authMiddleware, // Middleware to verify user authentication
+    commuterMiddleware, // Middleware to verify the user has a commuter role
+    addBooking // Controller function to handle the request
 );
 
 module.exports = router;

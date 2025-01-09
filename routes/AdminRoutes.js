@@ -21,6 +21,7 @@ const router = express.Router();
  *             type: object
  *             required:
  *               - routeNumber
+ *               - routeName
  *               - startingPoint
  *               - endingPoint
  *               - distance
@@ -28,6 +29,9 @@ const router = express.Router();
  *               routeNumber:
  *                 type: string
  *                 description: Identifier for the route (e.g., R001, R002).
+ *               routeName:
+ *                 type: string
+ *                 description: Name for the route.
  *               startingPoint:
  *                 type: string
  *                 description: Name of the starting location.

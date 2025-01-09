@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const routeSchema = new mongoose.Schema({
   routeNumber: { type: String, required: true, unique: true },
+  routeName: { type: String, required: true, unique: true },
   startingPoint: { type: String, required: true },
   endingPoint: { type: String, required: true },
   distance: { type: String, required: true },

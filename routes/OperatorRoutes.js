@@ -28,6 +28,9 @@ const operatorMiddleware = require('../middleware/operatorMiddleware');
  *             properties:
  *               route:
  *                 type: object
+ *                 required:
+ *                   - routeNumber
+ *                   - routeName
  *                 properties:
  *                   routeNumber:
  *                     type: string
@@ -37,6 +40,13 @@ const operatorMiddleware = require('../middleware/operatorMiddleware');
  *                     example: "Downtown to Uptown"
  *               bus:
  *                 type: object
+ *                 required:
+ *                   - registrationNumber
+ *                   - operatorName
+ *                   - busType
+ *                   - ticketPrice
+ *                   - capacity
+ *                   - availableSeats
  *                 properties:
  *                   registrationNumber:
  *                     type: string
@@ -56,32 +66,30 @@ const operatorMiddleware = require('../middleware/operatorMiddleware');
  *                   availableSeats:
  *                     type: number
  *                     example: 40
- *               schedule:
+ *               departurePoint:
+ *                 type: string
+ *                 example: "Downtown Terminal"
+ *               departureTime:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2025-01-01T08:00:00Z"
+ *               arrivalPoint:
+ *                 type: string
+ *                 example: "Uptown Terminal"
+ *               arrivalTime:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2025-01-01T10:00:00Z"
+ *               stops:
  *                 type: array
  *                 items:
- *                   type: object
- *                   properties:
- *                     departurePoint:
- *                       type: string
- *                       example: "Downtown Terminal"
- *                     departureTime:
- *                       type: string
- *                       format: date-time
- *                       example: "2025-01-01T08:00:00Z"
- *                     arrivalPoint:
- *                       type: string
- *                       example: "Uptown Terminal"
- *                     arrivalTime:
- *                       type: string
- *                       format: date-time
- *                       example: "2025-01-01T10:00:00Z"
- *                     stops:
- *                       type: array
- *                       items:
- *                         type: string
- *                         example: "Midway Stop"
+ *                   type: string
+ *                   example: "Midway Stop"
  *               scheduleValid:
  *                 type: object
+ *                 required:
+ *                   - startDate
+ *                   - endDate
  *                 properties:
  *                   startDate:
  *                     type: string
@@ -112,7 +120,76 @@ const operatorMiddleware = require('../middleware/operatorMiddleware');
  *                   example: "Schedule created successfully"
  *                 schedule:
  *                   type: object
- *                   $ref: '#/components/schemas/Schedule'
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "64d9f1f4d4f1e3a98d76b1e2"
+ *                     route:
+ *                       type: object
+ *                       properties:
+ *                         routeNumber:
+ *                           type: string
+ *                           example: "R123"
+ *                         routeName:
+ *                           type: string
+ *                           example: "Downtown to Uptown"
+ *                     bus:
+ *                       type: object
+ *                       properties:
+ *                         registrationNumber:
+ *                           type: string
+ *                           example: "ABC1234"
+ *                         operatorName:
+ *                           type: string
+ *                           example: "Cityline Express"
+ *                         busType:
+ *                           type: string
+ *                           example: "Luxury"
+ *                         ticketPrice:
+ *                           type: number
+ *                           example: 150.75
+ *                         capacity:
+ *                           type: number
+ *                           example: 50
+ *                         availableSeats:
+ *                           type: number
+ *                           example: 40
+ *                     departurePoint:
+ *                       type: string
+ *                       example: "Downtown Terminal"
+ *                     departureTime:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-01-01T08:00:00Z"
+ *                     arrivalPoint:
+ *                       type: string
+ *                       example: "Uptown Terminal"
+ *                     arrivalTime:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2025-01-01T10:00:00Z"
+ *                     stops:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                         example: "Midway Stop"
+ *                     scheduleValid:
+ *                       type: object
+ *                       properties:
+ *                         startDate:
+ *                           type: string
+ *                           format: date
+ *                           example: "2025-01-01"
+ *                         endDate:
+ *                           type: string
+ *                           format: date
+ *                           example: "2025-01-15"
+ *                     scheduleToken:
+ *                       type: string
+ *                       example: "R123ABC123420250101-DowntownToUptown"
+ *                     isActive:
+ *                       type: boolean
+ *                       example: true
  *       400:
  *         description: Missing or invalid fields in the request
  *         content:
@@ -151,11 +228,6 @@ router.post('/schedules', authMiddleware, operatorMiddleware, addSchedule);
  *           schema:
  *             type: object
  *             properties:
- *               schedule:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
  *                     departurePoint:
  *                       type: string
  *                       example: "Downtown Terminal"

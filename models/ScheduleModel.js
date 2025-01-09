@@ -40,15 +40,12 @@ const scheduleSchema = new mongoose.Schema({
       required: true, // Number of available seats is required
     },
   },
-  schedule: [
-    {
-      departurePoint: { type: String, required: true }, // Starting point of the trip
-      departureTime: { type: String, required: true }, // Departure time from the starting point
-      arrivalPoint: { type: String, required: true }, // Destination point of the trip
-      arrivalTime: { type: String, required: true }, // Arrival time at the destination
-      stops: [{ type: String }], // List of stops along the route
-    },
-  ],
+  
+  departurePoint: { type: String, required: true }, // Starting point of the trip
+  departureTime: { type: String, required: true }, // Departure time from the starting point
+  arrivalPoint: { type: String, required: true }, // Destination point of the trip
+  arrivalTime: { type: String, required: true }, // Arrival time at the destination
+  stops: [{ type: String }], // List of stops along the route,
   scheduleValid: {
     startDate: {
       type: Date,
