@@ -13,6 +13,11 @@ _dotenv.config();
 
 const _app = _express();
 
+_app.get('/', (req, res) => {
+  res.send('Welcome to the NTC Bus Seat Reservation System API');
+});
+
+
 // Middleware
 _app.use(_express.json());
 
