@@ -22,7 +22,7 @@ _app.get('/', (req, res) => {
 _app.use(_express.json());
 
 // Swagger Documentation
-_app.use('/api-docs', _swaggerUI.serve, _swaggerUI.setup(_swaggerConfig));
+_app.use('https://ntc-booking-system-1.onrender.com/api-docs', _swaggerUI.serve, _swaggerUI.setup(_swaggerConfig));
 
 // Users
 _app.use('/api/users', userRoutes);
